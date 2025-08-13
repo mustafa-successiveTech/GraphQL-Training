@@ -1,4 +1,4 @@
-import { commentModule, postModule, userModule } from "./schema/resolvers.js";
+import { commentModule, postModule, userModule } from "../schema/resolvers.js";
 
 export const resolvers = {
   Query: {

@@ -7,7 +7,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const typesArray = loadFilesSync(
-  path.join(__dirname, "../../schema.graphql")
+  path.join(__dirname, "../schema.graphql")
 );
 
 export const typeDefs = mergeTypeDefs(typesArray);

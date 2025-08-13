@@ -1,6 +1,9 @@
-import { userQueryResolvers, userResolvers } from "./../query.js";
-import { postQueryResolvers, postResolvers } from "./../query.js";
-import { commentQueryResolvers, commentResolvers } from "./../query.js";
+import { userQueryResolvers, userResolvers } from "../assignment1/query.js";
+import { postQueryResolvers, postResolvers } from "../assignment1/query.js";
+import {
+  commentQueryResolvers,
+  commentResolvers,
+} from "../assignment1/query.js";
 
 export const userModule = {
   Query: userQueryResolvers,

@@ -1,4 +1,5 @@
 import { commentModule, postModule, userModule } from "../schema/resolvers.js";
+import { UnionResolvers } from "./unionResolver.js";
 
 export const resolvers = {
   Query: {
@@ -15,4 +16,5 @@ export const resolvers = {
   Comment: {
     ...commentModule.Comment,
   },
+  ...UnionResolvers,
 };

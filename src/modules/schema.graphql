@@ -1,32 +1,24 @@
+union userResult = User | Error
+union getAllUserResult = getAllUsersWrapper | Error
+
+type getAllUsersWrapper{
+    getAllUsers: [User!]!
+}
+
 type Query {
-  getUser(id: ID!): User
-  getAllUsers: [User!]!
+  getUser(id: ID!): userResult
+  getAllUsers: getAllUserResult!
   getPost(id: ID!): Post
   getAllPosts: [Post!]!
   getComment(id: ID!): Comment
   getAllComments: [Comment!]!
+  getPosts(page: Int!, limit: Int!, sortBy: String): PaginatedPosts!
 }
 
-type User {
-  id: ID!
-  name: String!
-  email: String!
-  posts: [Post!]!        
-  comments: [Comment!]!  
-}
-
-type Post {
-  id: ID!
-  title: String!
-  content: String!
-  author: User!          
-  comments: [Comment!]!  
-}
-
-type Comment {
-  id: ID!
-  text: String!
-  author: User!          
-  post: Post!            
+type Mutation {
+  updateUser(id: ID!, name: String, email: String): User
+  deleteComment(id: ID!): Comment
+  addPost(title: String!, content: String!, authorId: ID!): Post
+  addComment(text: String!, authorId: ID!, postId: ID!): Comment
 }
 

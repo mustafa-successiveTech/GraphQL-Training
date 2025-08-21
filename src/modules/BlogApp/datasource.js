@@ -36,7 +36,12 @@ export const posts = [
 ];
 
 export const comments = [
-  { id: "1001", text: "Nice post!", authorId: "2" },
-  { id: "1002", text: "Very helpful.", authorId: "2" },
-  { id: "1003", text: "Thanks for sharing!", authorId: "1" },
+  { id: "1001", text: "Nice post!", authorId: "2", postId: "101" },
+  { id: "1002", text: "Very helpful.", authorId: "2", postId: "101" },
+  { id: "1003", text: "Thanks for sharing!", authorId: "1", postId: "102" },
+];
+
+export const messages = [
+  { id: "1", content: "Hey!", senderId: "101", createdAt: "2025-08-20T10:30:00Z" },
+  { id: "2", content: "Hello Mustafa!", senderId: "102", createdAt: "2025-08-20T10:32:00Z" },
 ];

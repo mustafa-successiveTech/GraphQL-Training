@@ -1,20 +1,55 @@
-import { commentModule, postModule, userModule } from "../schema/resolvers.js";
-import { UnionResolvers } from "./unionResolver.js";
+import { userQueryResolvers, userResolvers, postQueryResolvers, postResolvers, commentQueryResolvers, authQuery, messageHistoryResolvers } from "../BlogApp/query.js";
 
-export const resolvers = {
-  Query: {
-    ...userModule.Query,
-    ...postModule.Query,
-    ...commentModule.Query,
+import { authMutation, commentMutationResolvers, messageMutation, postMutationResolvers, userMutationResolvers, userPresenceMutation } from "../BlogApp/mutation.js";
+import { messageSubscription , commentSubscriptionResolvers, userPresenceSubscription} from "./subscription.js";
+
+export const userModule = {
+  Query: userQueryResolvers,
+  Mutation: userMutationResolvers,
+  User: userResolvers.User,
+};
+
+export const postModule = {
+  Query: postQueryResolvers,
+  Mutation: postMutationResolvers,
+  Post: postResolvers.Post,
+};
+
+export const commentModule = {
+  Query: commentQueryResolvers,
+  Mutation: commentMutationResolvers
+};
+
+export const verifySubscription = {
+  Mutation : {
+    ...messageMutation,
   },
-  User: {
-    ...userModule.User,
+  Subscription : {
+    // ...messageSubscription,
+    ...commentSubscriptionResolvers
+  }
+};
+
+export const authModule = {
+  Query : {
+    ...authQuery
   },
-  Post: {
-    ...postModule.Post,
+  Mutation : {
+    ...authMutation
+  }
+};
+
+export const userPresenceModule = {
+  Mutation : {
+    ...userPresenceMutation
   },
-  Comment: {
-    ...commentModule.Comment,
-  },
-  ...UnionResolvers,
+  Subscription : {
+    ...userPresenceSubscription
+  }
+};
+
+export const messageHistoryModule = {
+  Query : {
+    ...messageHistoryResolvers
+  }
 };

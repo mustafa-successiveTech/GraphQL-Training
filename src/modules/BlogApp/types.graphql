@@ -2,8 +2,19 @@ type User {
   id: ID!
   name: String!
   email: String!
+  password: String
   posts: [Post!]!
   comments: [Comment!]!
+  token: String
+  isOnline: String
+}
+
+type Userr {
+  id: ID!
+  name: String!
+  email: String!
+  password: String!
+  token: String!
 }
 
 type Post {
@@ -18,8 +29,8 @@ type Post {
 type Comment {
   id: ID!
   text: String!
-  author: User!
-  post: Post!
+  authorId: ID!
+  postId: ID!
 }
 
 type Error {
@@ -30,4 +41,18 @@ type Error {
 type PaginatedPosts {
   posts: [Post!]!
   totalCount: Int!
+}
+
+type Message {
+  id: ID!
+  content: String!
+  senderId: ID!
+  senderName: String!
+  createdAt: String!
+}
+
+type PresenceUpdate {
+  userId: ID!
+  name: String!
+  isOnline: String!
 }

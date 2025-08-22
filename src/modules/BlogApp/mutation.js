@@ -3,6 +3,10 @@ import { comments, messages, posts, users } from "./datasource.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { subscribe } from "graphql";
+import { authCheck } from "../utils/authUtils.js";
+import { User } from "../schema/userSchema.js";
+import { roleCheck } from "../utils/roleUtils.js";
+import { Message } from "../schema/messageSchema.js";
 
 export const userMutationResolvers = {
   updateUser: (_, { id, email, name }) => {
@@ -61,34 +65,48 @@ export const messageMutation = {
 
 export const authMutation = {
   register: async (_, { name, email, password }) => {
+    const ExistUser = await User.findOne({ email });
+    if (ExistUser) throw new Error("User already exists");
+
     const hashedPassword = await bcrypt.hash(password, 10);
-    const user = {
+    const NewUser = {
       id: users.length + 1,
       name,
       email,
       password: hashedPassword,
     };
-    users.push(user);
-    const token = jwt.sign({ user }, "SECRET_KEY", { expiresIn: "1h"});
+    const user = await User.create(NewUser);
     console.log("User", user);
-    return { ...user, token };
+    return { ...user };
   },
 
   login: async (_, { email, password }) => {
-    const user = users.find((u) => u.email === email);
+    const user = await User.findOne({ email });
     if (!user) throw new Error("User not found");
+    if (!user.password) throw new Error("User has no password");
+    console.log("Userc:", user);
     const valid = await bcrypt.compare(password, user.password);
     if (!valid) throw new Error("Invalid password");
-    const token = jwt.sign({ user }, "SECRET_KEY", {expiresIn : "1h"});
+    const token = jwt.sign({ user }, "SECRET_KEY", { expiresIn: "1h" });
     console.log("Token", token);
-    return { ...user, token };
+    return {
+      id: user._id.toString(),
+      name: user.name,
+      email: user.email,
+      password: user.password, 
+      posts: [], 
+      comments: [],
+      token,
+      isOnline: "true",
+    };
   },
 
-  sendMessage: (_, { content, senderId }, { pubsub, user }) => {
-    if (!user) throw new Error("Authentication required"); // ensures only logged-in users
-
-    const sender = users.find((u) => u.id === parseInt(senderId));
+  sendMessage: async (_, { content, senderId }, context) => {
+    authCheck(context);
+    const sender = User.findById({senderId});
     if (!sender) throw new Error("Sender not found");
+
+    roleCheck(context);
 
     const message = {
       id: messages.length + 1,
@@ -96,26 +114,25 @@ export const authMutation = {
       sender,
       createdAt: new Date().toISOString(),
     };
-    messages.push(message);
+    const msg = await Message.create({content});
     return message;
   },
 };
 
 export const userPresenceMutation = {
   setUserPresence: (_, { userId, isOnline }, { users }) => {
-    const user = users.find(u => u.id === userId);
-    if( !user ) throw new Error("User not found");
+    const user = users.find((u) => u.id === userId);
+    if (!user) throw new Error("User not found");
 
     user.isOnline = isOnline;
 
     const payload = {
       userId: user.id,
       name: user.name,
-      isOnline: user.isOnline
+      isOnline: user.isOnline,
     };
 
     pubsub.publish(PRESENCE_CHANGED, { presenceChanged: payload });
     return payload;
   },
-
 };

@@ -43,5 +43,3 @@ type Subscription {
   commentAdded(postId: ID!): Comment
   PresenceUpdate: PresenceUpdate!
 }
-
-

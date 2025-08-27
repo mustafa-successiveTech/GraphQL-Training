@@ -1,4 +1,4 @@
-import { comments, posts, users } from "./datasource.js";
+import { comments, posts, users, messages } from "./datasource.js";
 
 export const userQueryResolvers = {
   getUser: async (_, { id }) => {
@@ -47,9 +47,19 @@ export const commentQueryResolvers = {
   getAllComments: () => comments,
 };
 
-export const commentResolvers = {
-  Comment: {
-    author: (parent) => users.find((user) => user.id === parent.authorId),
-    post: (parent) => posts.find((post) => post.id === parent.postId),
-  },
+export const authQuery = {
+  users: () => users,
+  messages: () => messages
 };
+
+export const messageHistoryResolvers = {
+  messageHistory : (_, { limit, offset }, { messages}) => {
+
+    const sortedMessages = [...messages].sort(
+      (a, b) => new Date(a.createdAt) - new Date(b.createdAt)
+    );
+
+    return sortedMessages.slice(offset, offset + limit);
+  }
+}
+

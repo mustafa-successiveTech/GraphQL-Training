@@ -1,8 +1,8 @@
 union userResult = User | Error
 union getAllUserResult = getAllUsersWrapper | Error
 
-type getAllUsersWrapper{
-    getAllUsers: [User!]!
+type getAllUsersWrapper {
+  getAllUsers: [User!]!
 }
 
 type Query {
@@ -13,6 +13,11 @@ type Query {
   getComment(id: ID!): Comment
   getAllComments: [Comment!]!
   getPosts(page: Int!, limit: Int!, sortBy: String): PaginatedPosts!
+
+  users: [User!]!
+  messages: [Message!]!
+
+  messageHistory(limit: Int, offset: Int): [Message!]!
 }
 
 type Mutation {
@@ -20,5 +25,23 @@ type Mutation {
   deleteComment(id: ID!): Comment
   addPost(title: String!, content: String!, authorId: ID!): Post
   addComment(text: String!, authorId: ID!, postId: ID!): Comment
+
+  #  Assignment - 3
+  messageAdded(message: String!): String!
+
+  register(name: String!, email: String!, password: String!): Userr!
+  login(email: String!, password: String!): User!
+  sendMessage(content: String!, senderId: ID!): Message!
+
+  setUserPresence(userId: ID!, isOnline: String!): PresenceUpdate!
 }
+
+# Subscription
+
+type Subscription {
+  messageAdded: String!
+  commentAdded(postId: ID!): Comment
+  PresenceUpdate: PresenceUpdate!
+}
+
 

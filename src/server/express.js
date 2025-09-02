@@ -15,8 +15,10 @@ import { pubsub } from "./pubsub.js"; // Import the pubsub instance
 import { typeDefs } from "../modules/schema/typeDefs.js";
 import { resolvers } from "../modules/schema/resolvers.js";
 import jwt from 'jsonwebtoken';
+import { mongoDB } from "../config/mongodbConfig.js";
 
 export async function createExpressServer() {
+  mongoDB();
   const app = express();
   const httpServer = http.createServer(app);
 
